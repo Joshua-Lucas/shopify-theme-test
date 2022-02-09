@@ -66,7 +66,8 @@
                   show_vendor: section.settings.show_vendor,
                   show_rating: section.settings.show_rating,
                   lazy_load: lazy_load,
-                  quickview_toggled: section.settings.enable_product_quickview
+                  quickview_toggled: section.settings.enable_product_quickview,
+                  quickview_btn_text: section.settings.quickview_button_text
                 %}
               </li>
             {%- endfor -%}
@@ -193,12 +194,13 @@
       "type":"checkbox",
       "label": "Enable Product Quick View",
       "id": "enable_product_quickview",
-      "default": false
+      "default": true
     },
     {
       "type": "text",
       "label": "Text in Quick View Button",
-      "id": "quickview_button_text"
+      "id": "quickview_button_text",
+      "default": "Quick View"
     }
   ]
 }

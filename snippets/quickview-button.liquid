@@ -1,11 +1,11 @@
 {% comment %}
-    Renders a qucikview button overtop on a product card
+  Renders a qucikview button overtop on a product card
 
-    Accepts:
-    - button_text: {String} Sets the text for the quickview button. default: "QuickView"
+  Accepts:
+  - button_text: {String} Sets the text for the quickview button. default: "QuickView"
 
-    Usage:
-    {% render 'card-product', button_text: quickview_btn_text %}
+  Usage:
+  {% render 'card-product', button_text: quickview_btn_text %}
 {% endcomment %}
 
 {{ 'component-quickview-button.css' | asset_url | stylesheet_tag }}

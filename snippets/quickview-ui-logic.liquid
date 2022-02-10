@@ -1,0 +1,34 @@
+{% comment %}
+    This Script with handle the UI logic for a user click on the qucikview button. When the user clicks we will display a modal to the page with the product detail in it.
+{% endcomment %}
+
+<script>
+
+const quickviewButtons = document.querySelectorAll('#quickview')
+
+quickviewButtons.forEach( (button) => {
+
+    
+    button.addEventListener('click', async function(event){
+    {% comment %}
+        We will use the Section Rendering API to grab the section HTML. We will get the section HTML by using browser Fetch API to hit the API route.
+    {% endcomment %}
+    let response = await fetch('/?sections=modal');
+
+    {% comment %}
+        The section object retruned from the Section Rendering API, will have our section that we request  as the object key and the HTML of that section as the value.
+
+        We store our this section object into a variable
+        {% endcomment %}
+    let sectionObject = await response.json();
+
+
+    {% comment %}Next, we will assign the HTML from the sectionObject into a varaible that we can append to the DOM. {% endcomment %}
+    var modalHtml = sectionObject.modal;
+
+    {% comment %}Next, we need to insert our HTML string to the DOM  {% endcomment %}
+        document.body.insertAdjacentHTML("beforeend", modalHtml)
+
+    })
+})
+</script>

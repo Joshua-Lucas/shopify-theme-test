@@ -9,6 +9,8 @@
     - show_rating: {Boolean} Show the product rating. Default: false
     - extend_height: {Boolean} Card height extends to available container space. Default: true (optional)
     - lazy_load: {Boolean} Image should be lazy loaded. Default: true (optional)
+    - quickview_toggled: {Boolean} Renders qucikview button. default: false
+    - quickview_btn_text: {String} Sets the text for the quickview button. default: "QuickView"
 
     Usage:
     {% render 'card-product', show_vendor: section.settings.show_vendor %}
@@ -60,7 +62,7 @@
                 height="{{ card_product.featured_media.height }}"
                 loading="lazy"
               >
-              {%if quickview_toggled%}
+              {% if quickview_toggled %}
                 {% render 'quickview-button', button_text: quickview_btn_text %}
               {% endif %}
 

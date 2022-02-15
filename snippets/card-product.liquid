@@ -63,7 +63,7 @@
                 loading="lazy"
               >
               {% if quickview_toggled %}
-                {% render 'quickview-button', button_text: quickview_btn_text %}
+                {% render 'quickview-button', button_text: quickview_btn_text  handle: card_product.handle %}
               {% endif %}
 
               {%- if card_product.media[1] != nil and show_secondary_image -%}

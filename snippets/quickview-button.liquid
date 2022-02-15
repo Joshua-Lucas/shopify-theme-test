@@ -3,14 +3,15 @@
 
   Accepts:
   - button_text: {String} Sets the text for the quickview button. default: "QuickView"
+  - handle: {String} Passes the product handle to the button object. Required
 
   Usage:
-  {% render 'card-product', button_text: quickview_btn_text %}
+  {% render 'card-product', button_text: quickview_btn_text handle: product.handle %}
 {% endcomment %}
 
 {{ 'component-quickview-button.css' | asset_url | stylesheet_tag }}
 
 <div class="button-overlay"> 
-    <button id="quickview" class="button button--primary" type="submit">{{ button_text }}</button>
+    <button id="quickview" class="button button--primary" type="submit" product-title={{ handle }}>{{ button_text }}</button>
 </div>
 

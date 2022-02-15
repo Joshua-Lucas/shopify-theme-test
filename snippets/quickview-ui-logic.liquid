@@ -1,5 +1,5 @@
 {% comment %}
-    This Script with handle the UI logic for a user click on the qucikview button. When the user clicks we will display a modal to the page with the product detail in it.
+	This Script with handle the UI logic for a user click on the qucikview button. When the user clicks we will display a modal to the page with the product detail in it.
 {% endcomment %}
 
 <script>
@@ -8,27 +8,55 @@ const quickviewButtons = document.querySelectorAll('#quickview')
 
 quickviewButtons.forEach( (button) => {
 
-    
-    button.addEventListener('click', async function(event){
-    {% comment %}
-        We will use the Section Rendering API to grab the section HTML. We will get the section HTML by using browser Fetch API to hit the API route.
-    {% endcomment %}
-    let response = await fetch('/?sections=modal');
+	let productTitle = button.getAttribute('product-title')
+	
+	button.addEventListener('click', async function(event){
+	{% comment %}
+		We will use the Section Rendering API to grab the section HTML. We will get the section HTML by using browser Fetch API to hit the API route.
+	{% endcomment %}
+	let response = await fetch('/?sections=modal');
 
-    {% comment %}
-        The section object retruned from the Section Rendering API, will have our section that we request  as the object key and the HTML of that section as the value.
+	{% comment %}
+		The section object retruned from the Section Rendering API, will have our section that we request  as the object key and the HTML of that section as the value.
 
-        We store our this section object into a variable
-        {% endcomment %}
-    let sectionObject = await response.json();
+		We store our this section object into a variable
+	{% endcomment %}
+	let sectionObject = await response.json();
 
 
-    {% comment %}Next, we will assign the HTML from the sectionObject into a varaible that we can append to the DOM. {% endcomment %}
-    var modalHtml = sectionObject.modal;
+	{% comment %}Next, we will assign the HTML from the sectionObject into a varaible that we can append to the DOM. {% endcomment %}
+	var modalHtml = sectionObject.modal;
+	
+	{% comment %} Populate the modal section with product data. Then insert the HTML string into the DOM {% endcomment %}
+	addProductDetails(modalHtml, productTitle)
+	.then( res => document.body.insertAdjacentHTML("beforeend", res) );
 
-    {% comment %}Next, we need to insert our HTML string to the DOM  {% endcomment %}
-        document.body.insertAdjacentHTML("beforeend", modalHtml)
-
-    })
+	})
 })
+
+{% comment %} 
+	This function uses the Product API to get the products details and then replace that place holders in the modal section with the procuct data.
+
+	Accepts:
+	- html: [string] The section html you want populated with the product data. REQUIRED
+	- productHandle: [string] The handle of the product, which is used to retrieve the product data from the Product API. REQUIRED
+
+	Returns: [string] a new string of HTML with the popluated product data. 
+{% endcomment %}
+async function addProductDetails(sectionHtml, productHandle){
+	{% comment %} Get Product data from Product API {% endcomment %}
+	var product = await fetch(`/products/${productHandle}.json`)
+
+	{% comment %} destructure the response object to pull out the product object. {% endcomment %}
+	var {product} = await product.json()
+
+	{% comment %} Create a new variable that replaces all the palceholders with the data from the product object. {% endcomment %}
+	let propulatedHtml =  await sectionHtml.replaceAll('$[product_title]', product.title)
+						.replaceAll('$[img_src]', product.image.src)
+						.replaceAll('$[product_price]', product.variants[0].price)
+						.replaceAll('$[product_description]', product.body_html)
+
+	{% comment %} Retruns the newly populated HTML as a string. {% endcomment %}
+	return propulatedHtml;
+}
 </script>

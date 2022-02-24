@@ -891,3 +891,65 @@ class VariantRadios extends VariantSelects {
 }
 
 customElements.define('variant-radios', VariantRadios);
+
+/**
+ * FUNCTIONS FOR PRODUCT MODAL
+ */
+
+// This function handles the UI logic to close the modal.
+function closeModal(){
+  // This get the modal parent container. When using the sections API it stores the section html in a parent div with the naming pattern 'shopify-section-[section name]'
+  var modal = document.getElementById('shopify-section-modal')
+  
+  //removes the modal from the DOM.
+  document.body.removeChild(modal);
+  document.body.style= "";
+}
+
+// This function adds styling for when a product is successfully added to the cart.
+function successfullyAddedProduct(){
+  // These are the DOM elements related to the Add to Cart Button int the modal.
+  var modalButton = document.getElementById('modal_add_button')
+  var modalButtonText = document.getElementById('modal_button_text');
+  var addProductSuccess = document.getElementById('successful_add');
+
+  // Adding a more specific style to the button to change the bg-color
+  var button_styles = "background-color: black; transition: background-color 1.5s;"
+  modalButton.style = button_styles;
+  // Ensures that only the quantity specified will be added to the cart
+  modalButton.onclick = '';
+  
+
+  // Hides the button text and move the check mark to the middle of the button. These class are declared in the modal.liquid section.
+  modalButtonText.classList.add('AddedToCartText');
+  addProductSuccess.classList.add('AddedToCartCheck');
+  
+}
+
+// This functions adds the product to the cart using the Product Ajax API. On a successful POST request this function applies the CSS styling and closes the modal after 2.5s
+function addProductToCart(productId){
+  var formData = {
+    "items":[
+      {
+        id: productId,
+        quantity: 1
+      }
+    ]
+  }
+
+   fetch('/cart/add.js', {
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json'
+     },
+     body: JSON.stringify(formData)
+   })
+   .then(response => {
+    successfullyAddedProduct();
+    var timeoutID = setTimeout(closeModal, 2500);
+     return response.json();
+   })
+   .catch((error) => {
+     console.error('Error:', error);
+   });
+}

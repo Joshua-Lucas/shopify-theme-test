@@ -29,7 +29,10 @@ quickviewButtons.forEach( (button) => {
 	
 	{% comment %} Populate the modal section with product data. Then insert the HTML string into the DOM {% endcomment %}
 	addProductDetails(modalHtml, productTitle)
-	.then( res => document.body.insertAdjacentHTML("beforeend", res) );
+	.then( res => {
+		document.body.insertAdjacentHTML("beforeend", res) 
+		document.body.style="position: fixed;"
+	});
 
 	})
 })
@@ -45,16 +48,24 @@ quickviewButtons.forEach( (button) => {
 {% endcomment %}
 async function addProductDetails(sectionHtml, productHandle){
 	{% comment %} Get Product data from Product API {% endcomment %}
-	var product = await fetch(`/products/${productHandle}.json`)
+	var productRes = await fetch(`/products/${productHandle}.json`)
 
+	
 	{% comment %} destructure the response object to pull out the product object. {% endcomment %}
-	var {product} = await product.json()
+	var {product} = await productRes.json()
 
+
+	{% comment %} A hacky way to get the currency symbol from stores specified currency setting in shopify. {% endcomment %}
+	let money = '{{ 0 | money}}' 
+	let currencySymbol = money.charAt(0)
+	
 	{% comment %} Create a new variable that replaces all the palceholders with the data from the product object. {% endcomment %}
 	let propulatedHtml =  await sectionHtml.replaceAll('$[product_title]', product.title)
 						.replaceAll('$[img_src]', product.image.src)
-						.replaceAll('$[product_price]', product.variants[0].price)
+						.replaceAll('$[product_price]', currencySymbol + product.variants[0].price )
 						.replaceAll('$[product_description]', product.body_html)
+						.replaceAll('$[product_id]',  product.variants[0].id)
+						.replace('span', 'p')
 
 	{% comment %} Retruns the newly populated HTML as a string. {% endcomment %}
 	return propulatedHtml;

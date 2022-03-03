@@ -8,6 +8,7 @@ const quickviewButtons = document.querySelectorAll('#quickview')
 
 quickviewButtons.forEach( (button) => {
 
+	{% comment %} The buttons are passed the product titles as their ids, storing the product title to use to get product info and populate the modal template. {% endcomment %}
 	let productTitle = button.getAttribute('product-title')
 	
 	button.addEventListener('click', async function(event){
@@ -24,10 +25,10 @@ quickviewButtons.forEach( (button) => {
 	let sectionObject = await response.json();
 
 
-	{% comment %}Next, we will assign the HTML from the sectionObject into a varaible that we can append to the DOM. {% endcomment %}
+	{% comment %}Next, we will assign the HTML from the sectionObject into a varaible that we can append our modal section to the DOM. {% endcomment %}
 	var modalHtml = sectionObject.modal;
 	
-	{% comment %} Populate the modal section with product data. Then insert the HTML string into the DOM {% endcomment %}
+	{% comment %} Next we use the addProductDetails to populate the modal section with product data. The addProductFunction returns a promise that when fulfilled we insert the HTML string into the DOM {% endcomment %}
 	addProductDetails(modalHtml, productTitle)
 	.then( res => {
 		document.body.insertAdjacentHTML("beforeend", res) 
@@ -58,14 +59,28 @@ async function addProductDetails(sectionHtml, productHandle){
 	{% comment %} A hacky way to get the currency symbol from stores specified currency setting in shopify. {% endcomment %}
 	let money = '{{ 0 | money}}' 
 	let currencySymbol = money.charAt(0)
-	
+
+	{% comment %} Creates an empty variable to store the form html variant options. {% endcomment %}
+	let variantHtml = '';
+
+
+	{% comment %} Creates and Stores HTML for each Product Variant Avaiable. {% endcomment %}
+	if(product.variants.length > 1){
+		product.variants.forEach( (prod, index)=> {
+			variantHtml = variantHtml + `<div><input class="radio_button" type="radio" name="product" id="${product.title}-${prod.id}" value="${prod.id}" ${index == 0 ? "checked" : null}><label class="modal_radio" for="${product.title}-${prod.id}">${prod.title} for ${currencySymbol}${prod.price}</label></div>`
+		})
+		
+	} else {
+		variantHtml = `<div><input class="radio_button" type="radio" name="product" id="${product.title}-${product.variants[0].id}" value="${product.variants[0].id}" checked><label class="modal_radio" for="${product.title}-${product.variants[0].id}">${currencySymbol}${product.variants[0].price}</label></div>`
+	}
+
+
 	{% comment %} Create a new variable that replaces all the palceholders with the data from the product object. {% endcomment %}
 	let propulatedHtml =  await sectionHtml.replaceAll('$[product_title]', product.title)
 						.replaceAll('$[img_src]', product.image.src)
-						.replaceAll('$[product_price]', currencySymbol + product.variants[0].price )
+						.replaceAll('$[product_variant]', variantHtml )
 						.replaceAll('$[product_description]', product.body_html)
 						.replaceAll('$[product_id]',  product.variants[0].id)
-						.replace('span', 'p')
 
 	{% comment %} Retruns the newly populated HTML as a string. {% endcomment %}
 	return propulatedHtml;

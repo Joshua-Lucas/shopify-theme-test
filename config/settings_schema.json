@@ -439,6 +439,22 @@
     "name": "t:settings_schema.cards.name",
     "settings": [
       {
+        "type": "header",
+        "content": "Product Quick View Settings"
+      },
+      {
+        "type":"checkbox",
+        "label": "Enable Product Quick View",
+        "id": "enable_product_quickview",
+        "default": true
+      },
+      {
+        "type": "text",
+        "label": "Text in Quick View Button",
+        "id": "quickview_button_text",
+        "default": "Quick View"
+      },
+      {
         "type": "select",
         "id": "card_style",
         "options": [

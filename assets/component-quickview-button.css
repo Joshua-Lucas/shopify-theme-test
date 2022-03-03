@@ -8,8 +8,7 @@
 
 
 #content {
-
-overflow: hidden;
+    overflow: hidden;
 }
 
 #content .button-overlay {
@@ -32,19 +31,20 @@ transition: all 0.4s ease-in-out 0s;
 }
 
 .container:hover #content .button-overlay{
-opacity: 1;
-
+    opacity: 1;
 }
 
 
 .card__inner .card__content{
-display: none;
+    display: none;
 } 
 
 /* Have to update the z-index of the product link because after places the element on top of all other elements. */
-.card__heading a::after {
-    z-index: -1;
+/* Typically would avoid using !important here at all cost, but could not find the style that was overriding this one and didn't want to take the extra time for styling.*/
+.card__heading a::after{
+    z-index: -1 !important;
 }
+
 
 .button-overlay h3 {
 color: #fff;

@@ -51,13 +51,22 @@
               media_aspect_ratio: section.settings.image_ratio,
               show_secondary_image: section.settings.show_secondary_image,
               show_vendor: section.settings.show_vendor,
-              show_rating: section.settings.show_rating
+              show_rating: section.settings.show_rating,
+              quickview_toggled: settings.enable_product_quickview,
+              quickview_btn_text: settings.quickview_button_text
             %}
           </li>
         {%- else -%}
           {%- for i in (1..4) -%}
             <li class="grid__item">
-              {% render 'card-product', show_vendor: section.settings.show_vendor %}
+              {% render 'card-product',
+                card_product: product,
+                media_aspect_ratio: section.settings.image_ratio,
+                show_secondary_image: section.settings.show_secondary_image,
+                show_vendor: section.settings.show_vendor,
+                show_rating: section.settings.show_rating,
+                quickview_toggled: settings.enable_product_quickview,
+                quickview_btn_text: settings.quickview_button_text%}
             </li>
           {%- endfor -%}
         {%- endfor -%}
@@ -231,3 +240,5 @@
   ]
 }
 {% endschema %}
+
+{% render 'quickview-ui-logic' %}

@@ -1,5 +1,5 @@
 {% comment %} 
-    This section uses the raw liquid tag to set templates to be replaced using vinilla JavaScript, anything in the $[] will be replaced by the products details.
+    This section uses the raw liquid tag to set templates to be replaced using vinilla JavaScript, anything in the $[] will be replaced by the products details which is populated from the qucikview-ui-logic.liquid file.
 
     The UI logic for this modal is stored in the assests/global.js starting on line 900. 
 {% endcomment %}
@@ -28,6 +28,7 @@
         padding: 1rem;
         display: flex;
         flex-direction: column;
+        position: relative;
 
     }
 
@@ -75,11 +76,12 @@
         border: solid 1px transparent;
         cursor: pointer;
         display: inline-block;
-        align-self: end;
+       
     }
 
     .modal-content button#close-modal {
         position: absolute;
+        right: 20px;
     }
 
     .modal-content button:hover, 
@@ -88,16 +90,20 @@
         transition: color 0.5s;
     }
 
-
-
     .close-modal-button {
         width: 4rem;
         height: 4rem;
     }
 
+    .tax_description{
+        font-size: 1rem;
+        font-style: italic;
+    }
+
     .AddToCart{
         overflow: hidden;
         position: relative;
+        margin: 1rem 0;
     }
 
     .AddToCart .success{
@@ -112,12 +118,13 @@
         margin: 0;
         transform: translateX(200px);
         color: white;
-        transition: transform 2s, opacity 1s;
+        transition: transform 1.5s, opacity 1s;
     }
 
     .AddedToCartButton{
         background-color: black;
         transition: background-color 1s;
+        margin-top: 2rem;
     }
 
     .AddedToCartText{
@@ -127,6 +134,43 @@
     .checkmark {
         width: 3rem;
         height: 3rem;
+    }
+
+    .radio_button + label{
+        border: var(--variant-pills-border-width) solid rgba(var(--color-foreground), var(--variant-pills-border-opacity));
+        background-color: rgb(var(--color-background));
+        color: rgba(var(--color-foreground));
+        border-radius: var(--variant-pills-radius);
+        color: rgb(var(--color-foreground));
+        display: inline-block;
+        margin: 0.7rem 0.5rem 0.2rem 0;
+        padding: 1rem 2rem;
+        font-size: 1.4rem;
+        letter-spacing: 0.1rem;
+        line-height: 1;
+        text-align: center;
+        transition: border var(--duration-short) ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .radio_button:checked + label{
+        background-color: rgb(var(--color-foreground));
+        color: rgb(var(--color-background));
+    }
+
+    .radio_button {
+        clip: rect(0, 0, 0, 0);
+        overflow: hidden;
+        position: absolute;
+        height: 1px;
+        width: 1px;
+    }
+
+
+    .modal_radio_buttons{
+        margin-bottom: 1rem;
+        display: flex;
     }
 
 </style>
@@ -145,20 +189,46 @@
             <img src=$[img_src] alt="A bottle of $[product_title]"  />
             <div class="modal-content-product-details">
                 <h1 class="modal_product_title">$[product_title]</h1>
-                <p class="modal_price">$[product_price]</p>
                 $[product_description]
-                <button 
-                    onclick="addProductToCart($[product_id])" 
-                    id="modal_add_button"
-                    class="AddToCart product-form__submit button button--full-width button--secondary"
-                >
-                    <span id="successful_add" class="success">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="checkmark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                    </span>
-                    <p id="modal_button_text">Add to Cart</p>
-                </button>
+                <form id="modal_form" onsubmit="addProductToCart(event)">
+                    <filedset class="modal_radio_buttons">
+                        $[product_variant]
+                    </filedset>
+                    <p class="tax_description">Tax included</p>
+                    <div class="product-form__input product-form__quantity">
+                        <label class="form__label" for="Quantity-template--15729290019030__main">
+                          Quantity
+                        </label>
+                        <quantity-input class="quantity">
+                          <button class="quantity__button no-js-hidden" name="minus" type="button">
+                            <span class="visually-hidden">Decrease quantity for Hennessy VS Cognac</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" role="presentation" class="icon icon-minus" fill="none" viewBox="0 0 10 2">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M.5 1C.5.7.7.5 1 .5h8a.5.5 0 110 1H1A.5.5 0 01.5 1z" fill="currentColor">
+                                </path>
+                            </svg>
+                          </button>
+                          <input class="quantity__input" type="number" name="quantity" id="quantity" min="1" value="1"/>
+                          <button class="quantity__button no-js-hidden" name="plus" type="button">
+                            <span class="visually-hidden">Increase quantity for Hennessy VS Cognac</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" role="presentation" class="icon icon-plus" fill="none" viewBox="0 0 10 10">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M1 4.51a.5.5 0 000 1h3.5l.01 3.5a.5.5 0 001-.01V5.5l3.5-.01a.5.5 0 00-.01-1H5.5L5.49.99a.5.5 0 00-1 .01v3.5l-3.5.01H1z" fill="currentColor">
+                            </path></svg>
+                          </button>
+                        </quantity-input>
+                      </div>
+                    <button  
+                        type="submit"
+                        id="modal_add_button"
+                        class="AddToCart product-form__submit button button--full-width button--secondary"
+                    >
+                        <span id="successful_add" class="success">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="checkmark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </span>
+                        <p id="modal_button_text">Add to Cart</p>
+                    </button>
+            </form>
             </div>
         </div>
     </div>

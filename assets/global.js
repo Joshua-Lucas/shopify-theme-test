@@ -926,17 +926,48 @@ function successfullyAddedProduct(){
   
 }
 
-// This functions adds the product to the cart using the Product Ajax API. On a successful POST request this function applies the CSS styling and closes the modal after 2.5s
-function addProductToCart(productId){
+// This functions adds the quantity specified of the selected product to the cart using the Product Ajax API. On a successful POST request this function applies the CSS styling from the successfullyAddedProduct function and closes the modal after 2.5s using the closeModal function. 
+function addProductToCart(event){
+  event.preventDefault();
+
+  // Get the form for the modal.
+  let form = document.getElementById('modal_form')
+
+
+  // Returns a single input or an array of all inputs in the form. These inputs are rendered with the variant id as their value. The variant id will be used to update the cart with the correct product. 
+  let formProduct = form.elements.product
+
+  // Create a variable to store the selected product id. 
+  var selectedItemId;
+
+  // Loops through the products if there is more than one and stores the value of the input that is checked/selected.
+  if(formProduct > 1){
+    formProduct.forEach( product => {
+      if(product.checked){
+        selectedItemId = product.value
+      }
+      return 
+    })
+  }
+  // This stores the value of the single input item if there is only one variable. 
+  else {
+    selectedItemId = formProduct.value
+  }
+
+  // Stores the quantity selected
+  let productQuantity = form.elements.quantity.value
+  
+  // Stores that data based on the form data to be submitted to the Cart API
   var formData = {
     "items":[
       {
-        id: productId,
-        quantity: 1
+        id: selectedItemId,
+        quantity: productQuantity
       }
     ]
   }
 
+  // Runs the fetch logic to post the product to the Cart API
    fetch('/cart/add.js', {
      method: 'POST',
      headers: {
@@ -945,11 +976,17 @@ function addProductToCart(productId){
      body: JSON.stringify(formData)
    })
    .then(response => {
+    //  Gives user confirmation of a successful add to cart
     successfullyAddedProduct();
+
+    //  Waits a few seconds then closes the modal
     var timeoutID = setTimeout(closeModal, 2500);
+
+    // Returns the post data in a response header.
      return response.json();
    })
    .catch((error) => {
      console.error('Error:', error);
    });
 }
+

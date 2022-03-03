@@ -1,11 +1,11 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "New Dawn",
+    "theme_name": "Dawn",
     "theme_version": "3.0.0",
     "theme_author": "Shopify",
-    "theme_documentation_url": "https://help.shopify.com/en/manual/online-store/themes",
-    "theme_support_url": "https://support.shopify.com/"
+    "theme_documentation_url": "https:\/\/help.shopify.com\/en\/manual\/online-store\/themes",
+    "theme_support_url": "https:\/\/support.shopify.com\/"
   },
   {
     "name": "t:settings_schema.colors.name",
@@ -443,7 +443,7 @@
         "content": "Product Quick View Settings"
       },
       {
-        "type":"checkbox",
+        "type": "checkbox",
         "label": "Enable Product Quick View",
         "id": "enable_product_quickview",
         "default": true
